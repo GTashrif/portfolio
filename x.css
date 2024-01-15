@@ -81,7 +81,11 @@ div.container div.row div.col-6 img{
     width: 300px;
     border-radius: 100px;
     margin-left: 40%;
-    transition: all 1.5s ease-in-out;
+    transition: all 1.5s ease;
+}
+
+div.container div.row div.col-6 img:hover{
+    box-shadow: 0px 0px 50px #e5c185;
 }
 
 div.container div.row div.col-6>p{
@@ -150,6 +154,7 @@ div.container div.row div.box:hover{
     border: 1px solid #c7522a;
     border-radius: 60%;
     background-color: #e5c185;
+    box-shadow: 0px 0px 50px #e5c185;
 }
 
 .current{
@@ -206,6 +211,9 @@ footer button{
 .credits ul li p{
     padding-top: 15px;
 }
+
+
+
 
 
 
