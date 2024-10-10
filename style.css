@@ -1,0 +1,320 @@
+body{
+    margin: 0px;
+    padding: 0px;
+    background-color: #000 !important;
+}
+
+p, h1, h5{
+    margin-bottom: 0px !important;
+    color: white !important;
+}
+
+.navigateBar{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    height: 55px;
+    margin-bottom: 5px;
+}
+
+.navigate{
+    position: fixed;
+    width: auto;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    background-color: rgba(218, 197, 167, 0.2);
+    backdrop-filter: blur(20px);
+    border: 1px solid #DAC5A7;
+    padding-top: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 5px;
+    border-radius: 2px;
+    margin-top: 5px;
+    color: #DAC5A7 !important;
+}
+
+.title{
+    font-size: 18px;
+}
+
+.link{
+    text-decoration: none;
+    color: #DAC5A7 !important;
+    cursor: pointer;
+    transition: color 0.8s ease;
+    transition: background-color 0.8s ease;
+    padding: 5px;
+    border-radius: 10px;
+    
+}
+
+.link:hover, .github:hover, .indeed:hover, .linkedin:hover, .open-button:hover{
+    color: white !important;
+    background-color: rgba(218, 197, 167, 0.3);
+
+}
+
+.btn-talk, .btn-project{
+    border-radius: 0px !important;
+    color: black !important;
+    background-color: #DAC5A7 !important;
+    transition: background-color 0.5s ease-in !important;
+}
+
+.btn-talk:hover, .btn-project:hover{
+    background-color: white !important;
+}
+
+.left-img{
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    padding: 0% !important;
+
+}
+
+.img-main{
+    width: 50%;
+    height: 50%;
+    border-radius: 20px;
+    transition: margin-left 0.2s ease-in;
+}
+
+.img-main:hover{
+    margin-left: 20px;
+}
+
+.social-link{
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.github, .indeed, .linkedin{
+    border: 1px solid #DAC5A7;
+    padding: 10px;
+    padding-top: 7px;
+    border-radius: 100%;
+    transition: background-color 0.8s ease;
+    cursor: pointer;
+}
+
+.row{
+    width: 100%;
+}
+
+.write{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0% !important;
+}
+
+.writing p{
+    font-size: 40px;
+}
+
+.writing h1{
+    font-size: 50px;
+}
+
+.headline {
+    position: relative;
+    z-index: -2;
+    margin-top: 20px;
+    width: 100%;
+    overflow: hidden; /* Hides overflow to ensure continuous scrolling */
+    background-color:  rgba(218, 197, 167, 0.2);
+}
+
+.marquee {
+    display: flex;
+    white-space: nowrap; /* Prevents text wrapping */
+}
+
+.marquee-content {
+    display: flex;
+    gap: 40px;
+    animation: marquee 15s linear infinite; /* Adjust the duration as needed */
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%); /* Moves by 50% to create a continuous loop */
+    }
+}
+
+.skill-set {    
+    color: #DAC5A7 !important;
+    display: inline-block;
+    font-size: 50px;
+    font-weight: 900;
+    text-transform: uppercase;
+    padding: 0 10px; /* Adds spacing between items */
+}
+
+.education-head{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.education-head h1{
+    color: #DAC5A7 !important;
+}
+
+.edu{
+    display: flex;
+    justify-content: space-around !important;
+    margin: 0px !important;
+}
+
+.education-head h1{
+    font-size: 50px;
+    font-weight: 800;
+}
+
+.card-body-bg{
+    background-color: #DAC5A7 !important;
+    position: relative;
+    z-index: -2;
+}
+
+.card-title{
+    color: #000 !important;
+}
+
+.edu-card{
+    padding: 20px 5px 20px 5px;
+}
+
+.card-text{
+    color: black !important;
+}
+
+.project-row{
+    display: flex;
+    gap: 20px;
+    justify-content: center !important;
+}
+
+.project-display{
+    background-color: rgba(218, 197, 167, 0.2) !important;
+    line-height: 30px;
+}
+
+.project-body p{
+    color: #DAC5A7 !important;
+}
+
+.btn-view{
+    margin-top: 5px;
+}
+
+.btn-view-more{
+    border-radius: 5px !important;
+}
+
+.btn-view-more p{
+    font-weight: 800;
+    color: #000 !important;
+    
+}
+
+.newsletter{
+    background-color: rgba(218, 197, 167, 0.2) !important;
+    display: flex;
+    justify-content: center;
+}
+
+.newsletter-inner div input{
+    font-size: 20px;
+    background-color: rgba(218, 197, 167, 0.2);
+    color: #DAC5A7;
+    border: 1px solid #DAC5A7;
+}
+
+.footer-inner{
+    display: flex;
+    gap: 10px;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+}
+
+.navigate-sm{
+    width: 100%;
+    display: none;
+    /* display: block; */
+}
+
+.navigate-flex{
+    width: 100%;
+    justify-content: space-between;
+    display: none;
+    /* display: flex; */
+}
+
+.title-sm, .open-button{
+    font-size: 25px;
+    cursor: pointer;
+    padding: 0px 5px 0px 5px;
+}
+
+.link-option{
+    display: none;
+    /* display: block; */
+}
+
+.open-link-option{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+@media screen and (max-width: 500px) {
+    .navigate-flex{
+        display: flex;
+    }
+    .navigate-sm{
+        display: block;
+    }
+
+    .navigate-all{
+        display: none;
+    }
+
+    .social-link{
+        justify-content: center;
+    }
+    .writing p{
+        font-size: 20px;
+    }
+    
+    .writing h1{
+        font-size: 40px;
+    }
+    .write{
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        padding: 0% !important;
+    }
+
+    .link-option{
+        display: none;
+        animation: slow-anime 2s ease;
+        height: 0%
+    }
+
+
+
+}
