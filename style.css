@@ -131,26 +131,29 @@ h1 {
 .social-links {
     margin-top: 20px;
     display: flex;
-    gap: 15px;
+    gap: 20px;
     justify-content: center;
     flex-wrap: wrap;
 }
 
 .social-links a {
-    display: inline-block;
-    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
     background: var(--accent-color);
     color: white;
     text-decoration: none;
-    border-radius: 25px;
+    border-radius: 50%;
     transition: all 0.3s ease;
-    font-size: 0.9em;
+    font-size: 1.3em;
 }
 
 .social-links a:hover {
     background: var(--accent-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .section {
@@ -210,6 +213,18 @@ h2 {
     border-radius: 10px;
     padding: 25px;
     transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.project-image {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border: 1px solid var(--border-color);
 }
 
 .project-card:hover {
