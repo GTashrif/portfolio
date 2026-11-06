@@ -114,7 +114,7 @@
   }
   function runJavaTrace(source){
     const ast=new Parser(tokenize(source)).parse(),events=[],output=[];let steps=0;
-    const globals=Object.create(null),stack=["main"];
+    const globals={values:Object.create(null),parent:null},stack=["main"];
     const snapshot=(line,env)=>{if(++steps>1500)throw new JavaTraceError("Trace stopped after 1,500 steps to prevent an infinite loop.");const vars={};for(let e=env;e;e=e.parent)for(const k of Object.keys(e.values))if(!(k in vars))vars[k]=clone(e.values[k]);events.push({line,vars,stack:stack.slice()})};
     const clone=v=>{if(Array.isArray(v))return v.map(clone);if(v&&typeof v==="object")return Object.fromEntries(Object.entries(v).map(([k,x])=>[k,clone(x)]));return v};
     const env=(parent=null)=>({values:Object.create(null),parent});
@@ -164,7 +164,7 @@
       }
     }
     try{
-      const root=env();for(const f of ast.fields)root.values[f.name]=f.init?evalx(f.init,root):null;
+      const root=globals;for(const f of ast.fields)root.values[f.name]=f.init?evalx(f.init,root):null;
       stack[0]="main";const result=exec(ast.main.body,root);return{events,output:output.join(""),error:null};
     }catch(err){return{events,output:output.join(""),error:err.message||String(err)}}
   }
