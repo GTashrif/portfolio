@@ -94,10 +94,10 @@
     prefix(){
       const tok=this.take(),v=tok.v,line=tok.line;let x;
       if(v==="!"||v==="-"||v==="+"||v==="++"||v==="--")x={kind:"unary",op:v,arg:this.expression(8),line};
-      else if(v==="("){x=this.expression();this.need(")")}
+      else if(v==="("){x=this.expression();this.need(")")}\n      else if(v==="{"){const items=[];if(!this.is("}")){do{items.push(this.expression())}while(this.eat(","))}this.need("}");x={kind:"array",items,line}}
       else if(tok.t==="num"||tok.t==="str"||tok.t==="char")x={kind:"lit",value:tok.t==="char"?v:v,line};
       else if(v==="true"||v==="false"||v==="null")x={kind:"lit",value:v==="true"?true:v==="false"?false:null,line};
-      else if(v==="new"){const type=this.parseType();if(this.eat("[")){const size=this.expression();this.need("]");x={kind:"newarray",type,size,line};if(this.eat("{")){const items=[];if(!this.is("}")){do{items.push(this.expression())}while(this.eat(","))}this.need("}");x={kind:"array",items,line}}}else if(this.eat("{")){const items=[];if(!this.is("}")){do{items.push(this.expression())}while(this.eat(","))}this.need("}");x={kind:"array",items,line}}else throw new JavaTraceError("Object construction is not supported yet (line "+line+")")}
+      else if(v==="new"){const type=this.id();if(this.eat("[")){if(this.eat("]")){if(!this.eat("{"))throw new JavaTraceError("Expected array initializer after new "+type+"[] at line "+line);const items=[];if(!this.is("}")){do{items.push(this.expression())}while(this.eat(","))}this.need("}");x={kind:"array",items,line}}else{const size=this.expression();this.need("]");x={kind:"newarray",type,size,line}}}else throw new JavaTraceError("Object construction is not supported yet (line "+line+")")}
       else if(tok.t==="id"){x={kind:"var",name:v,line}}
       else throw new JavaTraceError("Unexpected token '"+v+"' at line "+line);
       while(true){
@@ -139,7 +139,7 @@
         }
         case"call":{
           if(n.callee.kind==="member"&&n.callee.object.kind==="var"&&n.callee.object.name==="System")throw new JavaTraceError("Use System.out.println(...) as a statement.");
-          if(n.callee.kind==="member"){const obj=evalx(n.callee.object,e),args=n.args.map(x=>evalx(x,e));if(n.callee.prop==="length")return obj.length;if(n.callee.prop==="toString")return String(obj);if(n.callee.prop==="add"&&Array.isArray(obj)){obj.push(args[0]);return true}if(n.callee.prop==="get"&&Array.isArray(obj))return obj[args[0]];if(n.callee.prop==="set"&&Array.isArray(obj)){obj[args[0]]=args[1];return null}throw new JavaTraceError("Unsupported method: "+n.callee.prop)}
+          if(n.callee.kind==="member"){const obj=evalx(n.callee.object,e),args=n.args.map(x=>evalx(x,e));if(n.callee.prop==="length")return obj.length;if(n.callee.prop==="charAt"&&typeof obj==="string")return obj.charAt(args[0]);if(n.callee.prop==="toUpperCase"&&typeof obj==="string")return obj.toUpperCase();if(n.callee.prop==="toLowerCase"&&typeof obj==="string")return obj.toLowerCase();if(n.callee.prop==="toString")return String(obj);if(n.callee.prop==="add"&&Array.isArray(obj)){obj.push(args[0]);return true}if(n.callee.prop==="get"&&Array.isArray(obj))return obj[args[0]];if(n.callee.prop==="set"&&Array.isArray(obj)){obj[args[0]]=args[1];return null}throw new JavaTraceError("Unsupported method: "+n.callee.prop)}
           if(n.callee.kind==="var"){const name=n.callee.name,fn=ast.methods[name];if(!fn)throw new JavaTraceError("Unknown method '"+name+"'.");if(stack.length>30)throw new JavaTraceError("Maximum call depth reached.");const local=env(globals);fn.params.forEach((p,i)=>local.values[p]=evalx(n.args[i],e));stack.push(name);snapshot(n.line,local);try{const r=exec(fn.body,local);return r&&r.type==="return"?r.value:null}finally{stack.pop()}}
           throw new JavaTraceError("Unsupported function call.");
         }
