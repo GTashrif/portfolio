@@ -94,7 +94,8 @@
     prefix(){
       const tok=this.take(),v=tok.v,line=tok.line;let x;
       if(v==="!"||v==="-"||v==="+"||v==="++"||v==="--")x={kind:"unary",op:v,arg:this.expression(8),line};
-      else if(v==="("){x=this.expression();this.need(")")}\n      else if(v==="{"){const items=[];if(!this.is("}")){do{items.push(this.expression())}while(this.eat(","))}this.need("}");x={kind:"array",items,line}}
+      else if(v==="("){x=this.expression();this.need(")")}
+      else if(v==="{"){const items=[];if(!this.is("}")){do{items.push(this.expression())}while(this.eat(","))}this.need("}");x={kind:"array",items,line}}
       else if(tok.t==="num"||tok.t==="str"||tok.t==="char")x={kind:"lit",value:tok.t==="char"?v:v,line};
       else if(v==="true"||v==="false"||v==="null")x={kind:"lit",value:v==="true"?true:v==="false"?false:null,line};
       else if(v==="new"){const type=this.id();if(this.eat("[")){if(this.eat("]")){if(!this.eat("{"))throw new JavaTraceError("Expected array initializer after new "+type+"[] at line "+line);const items=[];if(!this.is("}")){do{items.push(this.expression())}while(this.eat(","))}this.need("}");x={kind:"array",items,line}}else{const size=this.expression();this.need("]");x={kind:"newarray",type,size,line}}}else throw new JavaTraceError("Object construction is not supported yet (line "+line+")")}
