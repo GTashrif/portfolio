@@ -15,7 +15,7 @@ button,textarea,input{font:inherit}button{cursor:pointer;border:1px solid var(--
 <main class="wrap">
 <section class="intro"><div><h2>See what your code is doing.</h2><p>Paste JavaScript, run a trace, and inspect variables as execution moves through your program.</p></div><span class="tag">JAVASCRIPT · LIVE TRACE</span></section>
 <div class="workspace">
-<section class="panel"><div class="panelhead"><span class="paneltitle">✦ &nbsp; CODE EDITOR</span><div class="examples"><button id="sampleBasic">Basic</button><button id="sampleLoop">Loop</button><button id="sampleArray">Array</button><button id="sampleFunction">Function</button></div></div>
+<section class="panel"><div class="panelhead"><span class="paneltitle">✦ &nbsp; CODE EDITOR</span><div style="display:flex;gap:8px;align-items:center"><select id="language" aria-label="Programming language" style="background:#18243b;color:#edf3ff;border:1px solid #34415d;border-radius:8px;padding:6px 8px"><option value="javascript">JavaScript</option><option value="java">Java</option></select><div class="examples"><button id="sampleBasic">Basic</button><button id="sampleLoop">Loop</button><button id="sampleArray">Array</button><button id="sampleFunction">Function</button></div></div></div>
 <div class="editorwrap"><textarea id="code" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off">// Try changing the values and run the trace.
 let score = 4;
 let bonus = 3;
@@ -40,6 +40,7 @@ console.log("Total:", total);</textarea>
 <div class="notice"><strong>Current scope:</strong> This first release traces JavaScript statements, variables, loops, arrays, objects, functions and console output. It does not execute Java, Python, C or C++ yet. Only run code you trust; browser-side tracing is an educational tool, not a secure production sandbox.</div>
 </main>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="./java-tracer.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const samples={
@@ -133,6 +134,9 @@ function buildPlugin() {
 }
 function runCode(){
  stop();events=[];index=0;outputLines=[];render();setStatus('Preparing trace');
+ if($('language').value==='java'){
+   try{const result=window.runJavaTrace($('code').value);events=result.events;outputLines=result.output?result.output.replace(/\n$/,'').split('\n').map(text=>({type:'log',text})):[];if(result.error)outputLines.push({type:'error',text:result.error});index=0;setStatus(result.error?'Trace finished with error':'Trace complete',!!result.error);render();}catch(e){outputLines.push({type:'error',text:e.message});setStatus('Could not trace Java',true);render()}return;
+ }
  if(worker){worker.terminate();worker=null}
  try{
   const source=$('code').value;if(!source.trim())throw new Error('Paste some JavaScript code first.');
@@ -147,7 +151,12 @@ function runCode(){
 }
 $('run').addEventListener('click',runCode);$('next').onclick=()=>move(index+1);$('prev').onclick=()=>move(index-1);$('first').onclick=()=>move(0);$('last').onclick=()=>move(events.length-1);$('play').onclick=play;
 $('speed').oninput=()=>{if(timer){stop();play()}};$('clear').onclick=()=>{$('code').value='';events=[];index=0;outputLines=[];stop();setStatus('Ready')};$('clearOutput').onclick=()=>{outputLines=[];render()};
-$('sampleBasic').onclick=()=>$('code').value=samples.basic;$('sampleLoop').onclick=()=>$('code').value=samples.loop;$('sampleArray').onclick=()=>$('code').value=samples.array;$('sampleFunction').onclick=()=>$('code').value=samples.func;
+const javaSamples={"basic":"public class Main {\n  public static void main(String[] args) {\n    int score = 4;\n    int bonus = 3;\n    int total = score + bonus;\n    if (total > 5) {\n      System.out.println(\"You passed!\");\n    }\n    System.out.println(\"Total: \" + total);\n  }\n}","loop":"public class Main {\n  public static void main(String[] args) {\n    int sum = 0;\n    for (int i = 1; i <= 5; i++) {\n      sum += i;\n      System.out.println(\"i = \" + i + \", sum = \" + sum);\n    }\n    System.out.println(\"Final sum: \" + sum);\n  }\n}","array":"public class Main {\n  public static void main(String[] args) {\n    int[] numbers = new int[]{3, 6, 9};\n    int[] doubled = new int[3];\n    for (int i = 0; i < numbers.length; i++) {\n      doubled[i] = numbers[i] * 2;\n    }\n    System.out.println(\"First doubled value: \" + doubled[0]);\n  }\n}","func":"public class Main {\n  public static int multiply(int a, int b) {\n    int result = a * b;\n    return result;\n  }\n  public static void main(String[] args) {\n    int first = 6;\n    int second = 7;\n    int answer = multiply(first, second);\n    System.out.println(\"Answer: \" + answer);\n  }\n}"};
+const jsSamples={"basic":"// Try changing the values and run the trace.\nlet score = 4;\nlet bonus = 3;\nlet total = score + bonus;\nif (total > 5) {\n  console.log(\"You passed!\");\n}\nconsole.log(\"Total:\", total);","loop":"let sum = 0;\nfor (let i = 1; i <= 5; i++) {\n  sum += i;\n  console.log(\"i =\", i, \"sum =\", sum);\n}\nconsole.log(\"Final sum:\", sum);","array":"const numbers = [3, 6, 9];\nlet doubled = [];\nfor (let i = 0; i < numbers.length; i++) {\n  doubled.push(numbers[i] * 2);\n}\nconsole.log(\"Doubled:\", doubled);","func":"function multiply(a, b) {\n  const result = a * b;\n  return result;\n}\nlet answer = multiply(6, 7);\nconsole.log(\"Answer:\", answer);"};
+function loadSample(which){$('code').value=$('language').value==='java'?javaSamples[which]:jsSamples[which];}
+$('sampleBasic').onclick=()=>loadSample('basic');$('sampleLoop').onclick=()=>loadSample('loop');$('sampleArray').onclick=()=>loadSample('array');$('sampleFunction').onclick=()=>loadSample('func');
+$('language').onchange=()=>{const java=$('language').value==='java';$('code').value=java?javaSamples.basic:jsSamples.basic;document.querySelector('.subtle').textContent=java?'Java subset · interpreted in your browser':'JavaScript · ES6+ · Runs in an isolated worker';document.querySelector('.tag').textContent=java?'JAVA · LIVE TRACE':'JAVASCRIPT · LIVE TRACE';events=[];index=0;outputLines=[];stop();setStatus('Ready');};
+
 $('code').addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const a=e.target,s=a.selectionStart;a.value=a.value.slice(0,s)+'  '+a.value.slice(a.selectionEnd);a.selectionStart=a.selectionEnd=s+2}});
 render();
 </script>
