@@ -13,7 +13,7 @@ button,textarea,input{font:inherit}button{cursor:pointer;border:1px solid var(--
 <body>
 <header class="top"><div class="brand"><div class="logo">T</div><div><h1>TraceLab</h1><p>Understand code, one step at a time.</p></div></div><div class="topright">A visual code execution playground</div></header>
 <main class="wrap">
-<section class="intro"><div><h2>See what your code is doing.</h2><p>Paste JavaScript, run a trace, and inspect variables as execution moves through your program.</p></div><span class="tag">JAVASCRIPT · LIVE TRACE</span></section>
+<section class="intro"><div><h2>See what your code is doing.</h2><p>Paste Java or JavaScript, run a trace, and inspect variables as execution moves through your program.</p></div><span class="tag">JAVASCRIPT · LIVE TRACE</span></section>
 <div class="workspace">
 <section class="panel"><div class="panelhead"><span class="paneltitle">✦ &nbsp; CODE EDITOR</span><div style="display:flex;gap:8px;align-items:center"><select id="language" aria-label="Programming language" style="background:#18243b;color:#edf3ff;border:1px solid #34415d;border-radius:8px;padding:6px 8px"><option value="javascript">JavaScript</option><option value="java">Java</option></select><div class="examples"><button id="sampleBasic">Basic</button><button id="sampleLoop">Loop</button><button id="sampleArray">Array</button><button id="sampleFunction">Function</button></div></div></div>
 <div class="editorwrap"><textarea id="code" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off">// Try changing the values and run the trace.
@@ -37,7 +37,7 @@ console.log("Total:", total);</textarea>
 </div>
 <section class="panel"><div class="panelhead"><span class="paneltitle">⌁ &nbsp; OUTPUT CONSOLE</span><button id="clearOutput" style="padding:4px 8px;font-size:10px">Clear</button></div><div class="console" id="output">Output will appear here when you run your code.</div></section>
 </div></div>
-<div class="notice"><strong>Current scope:</strong> This first release traces JavaScript statements, variables, loops, arrays, objects, functions and console output. It does not execute Java, Python, C or C++ yet. Only run code you trust; browser-side tracing is an educational tool, not a secure production sandbox.</div>
+<div class="notice"><strong>Java mode:</strong> Traces a useful learning subset including primitive and String variables, arrays, arithmetic, conditions, loops, methods, recursion and System.out.print/println. It is an educational interpreter, not a full Java compiler/JVM: object construction, inheritance, interfaces, exceptions, collections and some Java syntax are not supported yet. JavaScript mode remains available. Only run code you trust.</div>
 </main>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="./java-tracer.js"></script>
