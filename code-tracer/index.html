@@ -101,7 +101,36 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':
 function stop(){if(timer){clearInterval(timer);timer=null}render()}
 function move(n){if(!events.length)return;index=Math.max(0,Math.min(events.length-1,n));render();if(index===events.length-1)stop()}
 function play(){if(timer){stop();return}if(!events.length||index>=events.length-1)index=0;const delay=1100-(+$('speed').value)*95;timer=setInterval(()=>{if(index>=events.length-1){stop();return}index++;render()},delay);render()}
-function buildPlugin(){return function({types:t}){return{visitor:{Program:{exit(path){path.traverse({Statement(p){if(p.node._traceGenerated||!p.node.loc)return;const names=Object.keys(p.scope.getAllBindings()).filter(n=>!n.startsWith('__trace'));const props=names.map(n=>t.objectProperty(t.stringLiteral(n),t.callExpression(t.identifier('__safe'),[t.arrowFunctionExpression([],t.identifier(n))])));const call=()=>{const s=t.expressionStatement(t.callExpression(t.identifier('__trace'),[t.numericLiteral(p.node.loc.start.line),t.objectExpression(props)]));s._traceGenerated=true;return s};p.insertBefore(call());}})}}}}}
+function buildPlugin() {
+  return function({ types: t }) {
+    return {
+      visitor: {
+        Program: {
+          exit(path) {
+            path.traverse({
+              Statement(p) {
+                if (p.node._traceGenerated || !p.node.loc) return;
+                const names = Object.keys(p.scope.getAllBindings()).filter(n => !n.startsWith('__trace'));
+                const props = names.map(n => t.objectProperty(
+                  t.stringLiteral(n),
+                  t.callExpression(t.identifier('__safe'), [
+                    t.arrowFunctionExpression([], t.identifier(n))
+                  ])
+                ));
+                const s = t.expressionStatement(t.callExpression(t.identifier('__trace'), [
+                  t.numericLiteral(p.node.loc.start.line),
+                  t.objectExpression(props)
+                ]));
+                s._traceGenerated = true;
+                p.insertBefore(s);
+              }
+            });
+          }
+        }
+      }
+    };
+  };
+}
 function runCode(){
  stop();events=[];index=0;outputLines=[];render();setStatus('Preparing trace');
  if(worker){worker.terminate();worker=null}
