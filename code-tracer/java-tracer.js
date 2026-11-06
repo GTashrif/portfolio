@@ -48,7 +48,7 @@
             const type=this.parseType();const name=this.id();
             if(this.eat("(")){
               const params=[];if(!this.is(")")){do{while(MODS.has(this.peek().v))this.take();this.parseType();params.push(this.id());}while(this.eat(","))}
-              this.need(")");const body=this.statement();methods[name]={params,body,returnType:type};
+              this.need(")");this.skipThrows();const body=this.statement();methods[name]={params,body,returnType:type};
             }else{
               let init=null;if(this.eat("="))init=this.expression();fields.push({name,init,line:this.peek().line});while(!this.is(";")&&!this.is("<eof>"))this.take();this.eat(";");
             }
@@ -57,7 +57,7 @@
         }
         // Accept a bare method or statement body for snippets.
         const before=this.i;
-        try{const type=this.parseType();const name=this.id();if(this.eat("(")){const params=[];if(!this.is(")")){do{this.parseType();params.push(this.id())}while(this.eat(","))}this.need(")");methods[name]={params,body:this.statement(),returnType:type};}else{this.i=before;throw new Error("not method")}}catch(e){if(e instanceof JavaTraceError)throw e;this.i=before;break}
+        try{const type=this.parseType();const name=this.id();if(this.eat("(")){const params=[];if(!this.is(")")){do{this.parseType();params.push(this.id())}while(this.eat(","))}this.need(")");this.skipThrows();methods[name]={params,body:this.statement(),returnType:type};}else{this.i=before;throw new Error("not method")}}catch(e){if(e instanceof JavaTraceError)throw e;this.i=before;break}
       }
       let main=methods.main;
       if(!main){
@@ -67,7 +67,7 @@
       }
       return {methods,main,fields};
     }
-    parseType(){let t=this.take();if(t.t!=="id")throw new JavaTraceError("Expected type at line "+t.line);let s=t.v;while(this.eat("<")){let depth=1;while(depth&&!this.is("<eof>")){if(this.eat("<"))depth++;else if(this.eat(">"))depth--;else this.take()}}while(this.eat("[")){this.need("]");s+="[]"}return s}
+    skipThrows(){if(this.eat("throws")){do{this.parseType()}while(this.eat(","))}}\n    parseType(){let t=this.take();if(t.t!=="id")throw new JavaTraceError("Expected type at line "+t.line);let s=t.v;while(this.eat("<")){let depth=1;while(depth&&!this.is("<eof>")){if(this.eat("<"))depth++;else if(this.eat(">"))depth--;else this.take()}}while(this.eat("[")){this.need("]");s+="[]"}return s}
     statement(){
       const line=this.peek().line;
       if(this.eat(";"))return{kind:"empty",line};
